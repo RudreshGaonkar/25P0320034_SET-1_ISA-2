@@ -43,3 +43,9 @@ example
 /android
 
 *.txt
+.antigravityMem
+.claude
+.vscode
+
+.recall_scratchpad.md
+AGENTS.md
