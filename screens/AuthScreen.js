@@ -30,6 +30,9 @@ export default function AuthScreen({ onLoginSuccess }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
+  // Password visibility toggle
+  const [showPassword, setShowPassword] = useState(false);
+
   // Error handling & loading state
   const [errorMessage, setErrorMessage] = useState('');
   const [loading, setLoading] = useState(false);
@@ -42,6 +45,7 @@ export default function AuthScreen({ onLoginSuccess }) {
 
   // --- Form Validation (Simple if-else conditions) ---
   const validateForm = () => {
+    const hasNumber = /\d/.test(name);
     // 1. Name Validation (Register Mode Only)
     if (isRegistering) {
       if (!name || name.trim().length === 0) {
@@ -50,33 +54,20 @@ export default function AuthScreen({ onLoginSuccess }) {
       } else if (name.trim().length < 2) {
         setErrorMessage('Name must be at least 2 characters long.');
         return false;
+      } else if (hasNumber) {
+        setErrorMessage('Name cannot contain numbers.');
+        return false;
       }
     }
 
-    // 2. Email Validation (Both Modes)
+    // 2. Standard Email Validation (Both Modes)
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!email || email.trim().length === 0) {
       setErrorMessage('Email is required.');
       return false;
-    } else if (!email.includes('@') || !email.includes('.')) {
-      setErrorMessage('Email must contain both "@" and "."');
+    } else if (!emailRegex.test(email.trim())) {
+      setErrorMessage('Please enter a valid email address (e.g., user@example.com).');
       return false;
-    } else {
-      const atIndex = email.indexOf('@');
-      const lastDotIndex = email.lastIndexOf('.');
-
-      // '@' must appear before the last '.' and not at index 0
-      if (atIndex <= 0 || lastDotIndex <= atIndex + 1) {
-        setErrorMessage('Please enter a valid email format.');
-        return false;
-      }
-
-
-      // Check TLD length: characters after the last '.' must be between 2 and 3 characters long
-      const tld = email.substring(lastDotIndex + 1);
-      if (tld.length < 2 || tld.length > 3) {
-        setErrorMessage('Characters after the last "." must be between 2 and 3 characters long (e.g., .com, .in).');
-        return false;
-      }
     }
 
     // 3. Password Validation (Both Modes)
@@ -85,6 +76,9 @@ export default function AuthScreen({ onLoginSuccess }) {
       return false;
     } else if (password.length < 8) {
       setErrorMessage('Password must be at least 8 characters long.');
+      return false;
+    } else if (password === email) {
+      setErrorMessage('Password and email cannot be the same.');
       return false;
     }
 
@@ -239,21 +233,32 @@ export default function AuthScreen({ onLoginSuccess }) {
               />
             </View>
 
-            {/* Password Input (Masked) */}
+            {/* Password Input with Show/Hide Toggle */}
             <View style={styles.inputContainer}>
               <Text style={styles.inputLabel}>Password</Text>
-              <TextInput
-                style={styles.textInput}
-                placeholder="Enter your password (min 8 characters)"
-                placeholderTextColor="#8e8e93"
-                value={password}
-                onChangeText={(text) => {
-                  setPassword(text);
-                  if (errorMessage) setErrorMessage('');
-                }}
-                secureTextEntry={true}
-                autoCapitalize="none"
-              />
+              <View style={styles.passwordWrapper}>
+                <TextInput
+                  style={styles.passwordInput}
+                  placeholder="Enter your password (min 8 characters)"
+                  placeholderTextColor="#8e8e93"
+                  value={password}
+                  onChangeText={(text) => {
+                    setPassword(text);
+                    if (errorMessage) setErrorMessage('');
+                  }}
+                  secureTextEntry={!showPassword}
+                  autoCapitalize="none"
+                />
+                <TouchableOpacity
+                  style={styles.eyeToggle}
+                  onPress={() => setShowPassword(!showPassword)}
+                  activeOpacity={0.7}
+                >
+                  <Text style={styles.eyeToggleText}>
+                    {showPassword ? 'Hide' : 'Show'}
+                  </Text>
+                </TouchableOpacity>
+              </View>
             </View>
 
             {/* Primary Submit Button (LOGIN / REGISTER) */}
@@ -360,6 +365,32 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     fontSize: 15,
     color: '#111827',
+  },
+  passwordWrapper: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#F9FAFB',
+    borderWidth: 1,
+    borderColor: '#E5E7EB',
+    borderRadius: 12,
+  },
+  passwordInput: {
+    flex: 1,
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    fontSize: 15,
+    color: '#111827',
+  },
+  eyeToggle: {
+    paddingHorizontal: 14,
+    paddingVertical: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  eyeToggleText: {
+    fontSize: 13,
+    fontWeight: '600',
+    color: '#2563EB',
   },
   primaryButton: {
     backgroundColor: '#2563EB',

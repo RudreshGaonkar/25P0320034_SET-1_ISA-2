@@ -1,22 +1,22 @@
 // screens/AddTaskScreen.js
 // Screen 3 (Add Task) for MyTasks App
 
-import React, { useState } from 'react';
+import { useState } from 'react';
 import {
-  StyleSheet,
-  Text,
-  View,
-  TextInput,
-  TouchableOpacity,
   ActivityIndicator,
   KeyboardAvoidingView,
   Platform,
   ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 // Firebase imports
-import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
+import { addDoc, collection, serverTimestamp } from 'firebase/firestore';
 import { db } from '../firebaseConfig';
 
 export default function AddTaskScreen({ user, onBack }) {
@@ -93,7 +93,7 @@ export default function AddTaskScreen({ user, onBack }) {
           {/* Header Bar */}
           <View style={styles.header}>
             <TouchableOpacity onPress={onBack} style={styles.backButton} activeOpacity={0.7}>
-              <Text style={styles.backButtonText}>← Back</Text>
+              <Text style={styles.backButtonText}> &lt; Back</Text>
             </TouchableOpacity>
             <Text style={styles.headerTitle}>3. Add Task</Text>
             <View style={{ width: 50 }} />
