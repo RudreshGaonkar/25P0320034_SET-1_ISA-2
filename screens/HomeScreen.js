@@ -130,13 +130,27 @@ export default function HomeScreen({ user, onLogout, onNavigateToAddTask }) {
             </Text>
           </View>
 
-          {/* Task Title with optional strikethrough if completed */}
-          <Text
-            style={[styles.taskTitle, isCompleted && styles.taskTitleCompleted]}
-            numberOfLines={2}
-          >
-            {item.title || 'Untitled Task'}
-          </Text>
+          {/* Task Details: Title & Description */}
+          <View style={styles.taskTextContainer}>
+            <Text
+              style={[styles.taskTitle, isCompleted && styles.taskTitleCompleted]}
+              numberOfLines={2}
+            >
+              {item.title || 'Untitled Task'}
+            </Text>
+
+            {item.description ? (
+              <Text
+                style={[
+                  styles.taskDescription,
+                  isCompleted && styles.taskDescriptionCompleted,
+                ]}
+                numberOfLines={3}
+              >
+                {item.description}
+              </Text>
+            ) : null}
+          </View>
         </TouchableOpacity>
 
         {/* Delete Button (Del) */}
@@ -299,8 +313,12 @@ const styles = StyleSheet.create({
   taskContent: {
     flex: 1,
     flexDirection: 'row',
-    alignItems: 'center',
+    alignItems: 'flex-start',
     marginRight: 12,
+  },
+  taskTextContainer: {
+    flex: 1,
+    gap: 3,
   },
   checkbox: {
     width: 26,
@@ -311,6 +329,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     marginRight: 14,
+    marginTop: 1,
     backgroundColor: '#FFFFFF',
   },
   checkboxCompleted: {
@@ -328,10 +347,18 @@ const styles = StyleSheet.create({
   taskTitle: {
     fontSize: 15,
     color: '#1F2937',
-    fontWeight: '500',
-    flex: 1,
+    fontWeight: '600',
   },
   taskTitleCompleted: {
+    textDecorationLine: 'line-through',
+    color: '#9CA3AF',
+  },
+  taskDescription: {
+    fontSize: 13,
+    color: '#6B7280',
+    lineHeight: 18,
+  },
+  taskDescriptionCompleted: {
     textDecorationLine: 'line-through',
     color: '#9CA3AF',
   },
